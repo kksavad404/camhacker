@@ -1,7 +1,7 @@
 
 # Camhacker - Phishing Tool
 
-![Camhacker Logo](camhacker_logo.png)
+![Camhacker Logo](camhackerlogo.png)
 
 ## Introduction
 

